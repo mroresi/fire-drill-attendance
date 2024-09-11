@@ -7,6 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 400px; margin: 20px auto; padding: 20px; text-align: center; }
         input, button { margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; font-size: 16px; }
+        #debug { margin-top: 20px; text-align: left; font-family: monospace; white-space: pre-wrap; }
     </style>
 </head>
 <body>
@@ -14,9 +15,16 @@
     <input type="text" id="name-input" placeholder="Enter your full name">
     <button onclick="markAttendance()">Mark Attendance</button>
     <p id="message"></p>
+    <div id="debug"></div>
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyaKBvZpbsTBFBS98s5PpozFwzuJ8uyvaZDZuFNcVIFPvFQ53vi9JNUIgegVhE5cTLbRA/exec';
+
+        function debug(message) {
+            const debugElement = document.getElementById('debug');
+            debugElement.textContent += message + '\n';
+            console.log(message);
+        }
 
         function markAttendance() {
             let name = document.getElementById('name-input').value.trim();
@@ -24,17 +32,25 @@
             
             if (name) {
                 messageElement.textContent = 'Marking attendance...';
+                debug('Marking attendance for: ' + name);
                 
                 // Create a new script element
                 var script = document.createElement('script');
                 script.src = `${SCRIPT_URL}?action=markAttendance&name=${encodeURIComponent(name)}&callback=handleResponse`;
+                debug('Request URL: ' + script.src);
                 
                 // Append the script to the document to make the request
                 document.body.appendChild(script);
 
                 // Remove the script after it's loaded
                 script.onload = function() {
+                    debug('Script loaded and executed');
                     document.body.removeChild(script);
+                };
+
+                script.onerror = function() {
+                    debug('Error loading script');
+                    messageElement.textContent = 'Error marking attendance. Please try again.';
                 };
             } else {
                 messageElement.textContent = 'Please enter your name.';
@@ -44,6 +60,7 @@
 
         // This function will be called by the JSONP response
         function handleResponse(data) {
+            debug('Response received: ' + JSON.stringify(data));
             document.getElementById('message').textContent = data.message || data.error;
         }
     </script>
