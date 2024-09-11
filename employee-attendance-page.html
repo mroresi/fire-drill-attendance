@@ -34,31 +34,33 @@
                 messageElement.textContent = 'Marking attendance...';
                 debug('Marking attendance for: ' + name);
                 
-                // Create a new script element
-                var script = document.createElement('script');
-                script.src = `${SCRIPT_URL}?action=markAttendance&name=${encodeURIComponent(name)}&callback=handleResponse`;
-                debug('Request URL: ' + script.src);
-                
-                // Append the script to the document to make the request
-                document.body.appendChild(script);
-
-                // Remove the script after it's loaded
-                script.onload = function() {
-                    debug('Script loaded and executed');
-                    document.body.removeChild(script);
-                };
-
-                script.onerror = function() {
-                    debug('Error loading script');
-                    messageElement.textContent = 'Error marking attendance. Please try again.';
-                };
+                // Use fetch instead of JSONP
+                fetch(`${SCRIPT_URL}?action=markAttendance&name=${encodeURIComponent(name)}`)
+                    .then(response => {
+                        debug('Response status: ' + response.status);
+                        debug('Response headers: ' + JSON.stringify([...response.headers]));
+                        return response.text();
+                    })
+                    .then(text => {
+                        debug('Response text: ' + text);
+                        try {
+                            const data = JSON.parse(text);
+                            handleResponse(data);
+                        } catch (error) {
+                            debug('Error parsing JSON: ' + error);
+                            messageElement.textContent = 'Error processing response. Please try again.';
+                        }
+                    })
+                    .catch(error => {
+                        debug('Fetch error: ' + error);
+                        messageElement.textContent = 'Error marking attendance. Please try again.';
+                    });
             } else {
                 messageElement.textContent = 'Please enter your name.';
             }
             document.getElementById('name-input').value = '';
         }
 
-        // This function will be called by the JSONP response
         function handleResponse(data) {
             debug('Response received: ' + JSON.stringify(data));
             document.getElementById('message').textContent = data.message || data.error;
