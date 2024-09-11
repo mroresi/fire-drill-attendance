@@ -44,7 +44,7 @@
         });
 
         function refreshAttendance() {
-            fetch('https://script.google.com/macros/s/AKfycbzvDE1bCSrQ3Jum9hHXLw0OoMz4bboGsvEt6cVl3tD6BQzB4cuIemEt3Rr5XSVlwU3ifw/exec')
+            fetch('https://script.google.com/macros/s/AKfycbwEng2YISnxDn1wGaHEMGtqSZMjnKKeStUiGqkarTrbadNHGewgK1-ojpi6E0rzCi8HSA/exec')
             .then(response => response.json())
             .then(data => {
                 updateLists(data.employees, data.attendance);
@@ -66,7 +66,7 @@
         }
 
         function generateReport() {
-            fetch('https://script.google.com/macros/s/AKfycbzvDE1bCSrQ3Jum9hHXLw0OoMz4bboGsvEt6cVl3tD6BQzB4cuIemEt3Rr5XSVlwU3ifw/exec')
+            fetch('https://script.google.com/macros/s/AKfycbwEng2YISnxDn1wGaHEMGtqSZMjnKKeStUiGqkarTrbadNHGewgK1-ojpi6E0rzCi8HSA/exec')
             .then(response => response.blob())
             .then(blob => {
                 let url = window.URL.createObjectURL(blob);
