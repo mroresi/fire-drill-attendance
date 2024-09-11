@@ -19,7 +19,7 @@
         function markAttendance() {
             let name = document.getElementById('name-input').value.trim();
             if (name) {
-                fetch('https://script.google.com/macros/s/[https://script.google.com/macros/library/d/1gJw7xmUIlbpocuE80EJ2QVx7OC4yWspP80o-AOXJvGdIfeeoDCOZAVFT/1]/exec', {
+                fetch('https://script.google.com/macros/s/AKfycbyaKBvZpbsTBFBS98s5PpozFwzuJ8uyvaZDZuFNcVIFPvFQ53vi9JNUIgegVhE5cTLbRA/exec', {
                     method: 'POST',
                     body: JSON.stringify({action: 'markAttendance', name: name}),
                     headers: {'Content-Type': 'application/json'}
