@@ -7,6 +7,7 @@
     <style>
         body { font-family: Arial, sans-serif; max-width: 400px; margin: 20px auto; padding: 20px; text-align: center; }
         input, button { margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; font-size: 16px; }
+        #debug { margin-top: 20px; text-align: left; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -14,21 +15,37 @@
     <input type="text" id="name-input" placeholder="Enter your full name">
     <button onclick="markAttendance()">Mark Attendance</button>
     <p id="message"></p>
+    <div id="debug"></div>
 
     <script>
         function markAttendance() {
             let name = document.getElementById('name-input').value.trim();
+            let debugDiv = document.getElementById('debug');
+            debugDiv.innerHTML = ''; // Clear previous debug messages
+            
             if (name) {
+                debugDiv.innerHTML += `Sending request for name: ${name}<br>`;
+                
                 fetch('https://script.google.com/macros/s/AKfycbyaKBvZpbsTBFBS98s5PpozFwzuJ8uyvaZDZuFNcVIFPvFQ53vi9JNUIgegVhE5cTLbRA/exec', {
                     method: 'POST',
                     body: JSON.stringify({action: 'markAttendance', name: name}),
                     headers: {'Content-Type': 'application/json'}
                 })
-                .then(response => response.json())
+                .then(response => {
+                    debugDiv.innerHTML += `Response status: ${response.status}<br>`;
+                    return response.text(); // Change to text() instead of json()
+                })
                 .then(data => {
-                    document.getElementById('message').textContent = data.message;
+                    debugDiv.innerHTML += `Response data: ${data}<br>`;
+                    try {
+                        let jsonData = JSON.parse(data);
+                        document.getElementById('message').textContent = jsonData.message;
+                    } catch (e) {
+                        document.getElementById('message').textContent = 'Error parsing response. Check debug info.';
+                    }
                 })
                 .catch(error => {
+                    debugDiv.innerHTML += `Error: ${error}<br>`;
                     document.getElementById('message').textContent = 'Error marking attendance. Please try again.';
                 });
             } else {
