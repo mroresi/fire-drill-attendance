@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Drill Attendance</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 20px auto; padding: 20px; text-align: center; }
+        input, button { margin: 10px 0; padding: 10px; width: 100%; box-sizing: border-box; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Fire Drill Attendance</h1>
+    <input type="text" id="name-input" placeholder="Enter your full name">
+    <button onclick="markAttendance()">Mark Attendance</button>
+    <p id="message"></p>
+
+    <script>
+        function markAttendance() {
+            let name = document.getElementById('name-input').value.trim();
+            if (name) {
+                fetch('https://script.google.com/macros/s/[https://script.google.com/macros/library/d/1gJw7xmUIlbpocuE80EJ2QVx7OC4yWspP80o-AOXJvGdIfeeoDCOZAVFT/1]/exec', {
+                    method: 'POST',
+                    body: JSON.stringify({action: 'markAttendance', name: name}),
+                    headers: {'Content-Type': 'application/json'}
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('message').textContent = data.message;
+                })
+                .catch(error => {
+                    document.getElementById('message').textContent = 'Error marking attendance. Please try again.';
+                });
+            } else {
+                document.getElementById('message').textContent = 'Please enter your name.';
+            }
+            document.getElementById('name-input').value = '';
+        }
+    </script>
+</body>
+</html>
