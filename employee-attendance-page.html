@@ -18,32 +18,28 @@
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyaKBvZpbsTBFBS98s5PpozFwzuJ8uyvaZDZuFNcVIFPvFQ53vi9JNUIgegVhE5cTLbRA/exec';
 
-        async function markAttendance() {
+        function markAttendance() {
             let name = document.getElementById('name-input').value.trim();
             let messageElement = document.getElementById('message');
             
             if (name) {
                 messageElement.textContent = 'Marking attendance...';
-                try {
-                    const response = await fetch(`${SCRIPT_URL}?action=markAttendance&name=${encodeURIComponent(name)}`, {
-                        method: 'POST',
-                        mode: 'cors',
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-
-                    const data = await response.json();
-                    messageElement.textContent = data.message;
-                } catch (error) {
-                    console.error('Error:', error);
-                    messageElement.textContent = 'Error marking attendance. Please try again.';
-                }
+                
+                // Create a new script element
+                var script = document.createElement('script');
+                script.src = `${SCRIPT_URL}?action=markAttendance&name=${encodeURIComponent(name)}&callback=handleResponse`;
+                
+                // Append the script to the document to make the request
+                document.body.appendChild(script);
             } else {
                 messageElement.textContent = 'Please enter your name.';
             }
             document.getElementById('name-input').value = '';
+        }
+
+        // This function will be called by the JSONP response
+        function handleResponse(data) {
+            document.getElementById('message').textContent = data.message || data.error;
         }
     </script>
 </body>
