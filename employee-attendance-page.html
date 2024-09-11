@@ -31,6 +31,11 @@
                 
                 // Append the script to the document to make the request
                 document.body.appendChild(script);
+
+                // Remove the script after it's loaded
+                script.onload = function() {
+                    document.body.removeChild(script);
+                };
             } else {
                 messageElement.textContent = 'Please enter your name.';
             }
