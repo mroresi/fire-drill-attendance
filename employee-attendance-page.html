@@ -26,7 +26,7 @@
             if (name) {
                 debugDiv.innerHTML += `Sending request for name: ${name}<br>`;
                 
-                fetch('https://script.google.com/macros/s/AKfycbwEng2YISnxDn1wGaHEMGtqSZMjnKKeStUiGqkarTrbadNHGewgK1-ojpi6E0rzCi8HSA/exec', {
+                fetch('https://script.google.com/macros/library/d/1m67xr2iU-aCwj2XIq4U6cLyGvZO2e5MRMXqTduwIddbHm9o4DJ8wACAw/2', {
                     method: 'POST',
                     body: JSON.stringify({action: 'markAttendance', name: name}),
                     headers: {'Content-Type': 'application/json'}
